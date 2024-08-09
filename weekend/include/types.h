@@ -6,4 +6,6 @@
 typedef double f64;
 typedef float f32;
 
+typedef int32_t i32;
+
 #endif

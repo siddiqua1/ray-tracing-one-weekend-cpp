@@ -50,6 +50,11 @@ public:
             self.m_repr[1] * scalar,
             self.m_repr[2] * scalar);
     }
+    static friend inline vec3 operator*(const f64 &scalar, const vec3 &self)
+    {
+        // communtative (theoretically though IEEE might have some issues?)
+        return self * scalar;
+    }
 
     inline vec3 &operator/=(const f64 &scalar)
     {

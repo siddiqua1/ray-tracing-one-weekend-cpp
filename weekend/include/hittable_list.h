@@ -23,18 +23,17 @@ public:
     m_objects.push_back(object);
   }
 
-  std::optional<hit_record> hit(const ray &r, f64 t_min, f64 t_max) const override
+  std::optional<hit_record> hit(const ray &r, interval ray_t) const override
   {
     std::optional<hit_record> closest_valid_hit;
-    f64 closest_hit = t_max;
 
     for (const auto &object : m_objects)
     {
-      auto maybe_hit = object->hit(r, t_min, closest_hit);
+      auto maybe_hit = object->hit(r, ray_t);
       if (maybe_hit.has_value())
       {
         const auto hit = maybe_hit.value();
-        closest_hit = hit.t;
+        ray_t.m_max = hit.t;
         closest_valid_hit = hit;
       }
     }

@@ -12,14 +12,9 @@
 using std::make_shared;
 using std::shared_ptr;
 
-// Common Headers
 #include "types.h"
-#include "color.h"
-#include "ray.h"
-#include "vec3.h"
 
 // Constants
-
 const f64 infinity = std::numeric_limits<f64>::infinity();
 const f64 pi = 3.1415926535897932385;
 
@@ -29,5 +24,11 @@ inline f64 degrees_to_radians(f64 degrees)
 {
   return degrees * pi / 180.0;
 }
+
+// Common Headers
+#include "color.h"
+#include "ray.h"
+#include "vec3.h"
+#include "interval.h"
 
 #endif

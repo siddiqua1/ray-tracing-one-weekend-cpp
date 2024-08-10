@@ -3,6 +3,7 @@
 
 #include <optional>
 #include "ray.h"
+#include "interval.h"
 
 struct hit_record
 {
@@ -22,7 +23,7 @@ class hittable
 {
 public:
   virtual ~hittable() = default;
-  virtual std::optional<hit_record> hit(const ray &r, f64 t_min, f64 t_max) const = 0;
+  virtual std::optional<hit_record> hit(const ray &r, interval ray_t) const = 0;
 };
 
 #endif

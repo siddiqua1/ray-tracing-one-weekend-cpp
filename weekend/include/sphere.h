@@ -11,7 +11,7 @@ public:
   {
   }
 
-  std::optional<hit_record> hit(const ray &r, f64 t_min, f64 t_max) const override
+  std::optional<hit_record> hit(const ray &r, interval ray_t) const override
   {
     const auto C_minus_Q = m_center - r.origin();
     const auto &dir = r.direction();
@@ -28,10 +28,10 @@ public:
     const auto sqrt_discriminant = std::sqrt(discriminant);
 
     auto root = (h - sqrt_discriminant) / a;
-    if (root <= t_min || t_max <= root)
+    if (!ray_t.surrounds(root))
     {
       root = (h + sqrt_discriminant) / a;
-      if (root <= t_min || t_max <= root)
+      if (!ray_t.surrounds(root))
       {
         return std::nullopt;
       }

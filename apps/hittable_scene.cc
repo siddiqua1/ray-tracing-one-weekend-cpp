@@ -64,7 +64,7 @@ color ray_color(const ray &r, const hittable &world)
     const auto sphere_center = point3(0, 0, -1);
     const auto sphere_radius = 0.5;
 
-    auto maybe_record = world.hit(r, 0, infinity);
+    auto maybe_record = world.hit(r, interval(0, infinity));
 
     if (maybe_record.has_value())
     {

@@ -17,3 +17,15 @@ add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
 target_link_libraries(${EXECUTABLE_NAME} PUBLIC
     weekend
 )
+
+set(EXECUTABLE_NAME rendered_normals)
+add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
+target_link_libraries(${EXECUTABLE_NAME} PUBLIC
+    weekend
+)
+
+set(EXECUTABLE_NAME hittable_scene)
+add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
+target_link_libraries(${EXECUTABLE_NAME} PUBLIC
+    weekend
+)

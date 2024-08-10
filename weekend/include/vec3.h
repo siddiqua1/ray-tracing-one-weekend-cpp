@@ -126,6 +126,11 @@ inline vec3 operator/(const vec3 &u, const vec3 &v)
         u.z() / v.z());
 }
 
+inline bool operator==(const vec3 &u, const vec3 &v)
+{
+    return u.x() == v.x() && u.y() == v.y() && u.z() == v.z();
+}
+
 inline f64 dot(const vec3 &u, const vec3 &v)
 {
     return u.x() * v.x() + u.y() * v.y() + u.z() * v.z();

@@ -13,6 +13,9 @@ inline f64 degrees_to_radians(f64 degrees)
 
 inline f64 random_f64()
 {
+    /**
+     * TODO: Refer to Cherno's video on random ion c++ in 3 lines of code
+     */
     return std::rand() / (RAND_MAX + 1.0);
 }
 

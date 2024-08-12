@@ -205,4 +205,12 @@ inline vec3 reflect(const vec3 &v, const vec3 &n)
     return v - 2 * dot(v, n) * n;
 }
 
+inline vec3 refract(const vec3 &uv, const vec3 &n, f64 etaI_over_etaT)
+{
+    auto cos_theta = std::fmin(dot(-uv, n), 1.0);
+    vec3 r_out_perpendicular = etaI_over_etaT * (uv + cos_theta * n);
+    vec3 r_out_parallel = -std::sqrt(std::fabs(1.0 - r_out_perpendicular.len_squared())) * n;
+    return r_out_parallel + r_out_perpendicular;
+}
+
 #endif

@@ -3,12 +3,16 @@
 
 #include "prelude.h"
 #include "hittable.h"
+#include "material.h"
 
 class camera
 {
 public:
   f64 m_aspect_ratio{1.0};
   i32 m_image_width{100};
+  i32 m_samples_per_pixel{10};
+  i32 m_max_depth{10};
+  f64 m_reflective_rate{0.5};
 
   void initialize()
   {
@@ -26,15 +30,18 @@ public:
     m_viewport_upper_left = m_center - vec3(0, 0, m_focal_length) - m_viewport_u / 2 - m_viewport_v / 2;
 
     m_pixel00_loc = m_viewport_upper_left + 0.5 * (m_pixel_delta_u + m_pixel_delta_v);
+
+    m_pixel_samples_scale = 1.0 / m_samples_per_pixel;
   }
 
-  inline vec3 pixel_ij(i32 i, i32 j)
+  inline vec3 pixel_ij(i32 i, i32 j, const vec3 &offset) const
   {
-    return m_pixel00_loc + (i * m_pixel_delta_u) + (j * m_pixel_delta_v);
+    return m_pixel00_loc + ((i + offset.x()) * m_pixel_delta_u) + ((j + offset.y()) * m_pixel_delta_v);
   }
 
   void render(const hittable &world)
   {
+    initialize();
     std::cout
         << "P3\n"
         << m_image_width << ' ' << m_image_height << "\n255\n";
@@ -45,12 +52,13 @@ public:
                 << (m_image_height - j) << ' ' << std::flush;
       for (i32 i = 0; i < m_image_width; i++)
       {
-        auto pixel_ij_center = pixel_ij(i, j);
-        auto ray_direction = pixel_ij_center - m_center;
-
-        ray r(m_center, ray_direction);
-        color pixel_color = ray_color(r, world);
-        write_color(std::cout, pixel_color);
+        color pixel_color(0, 0, 0);
+        for (i32 sample = 0; sample < m_samples_per_pixel; ++sample)
+        {
+          ray r = get_ray(i, j);
+          pixel_color += ray_color(r, m_max_depth, world);
+        }
+        write_color(std::cout, m_pixel_samples_scale * pixel_color);
       }
     }
     std::clog << "\rDone.                 \n";
@@ -73,6 +81,8 @@ private:
   vec3 m_viewport_upper_left{};
   vec3 m_pixel00_loc{};
 
+  f64 m_pixel_samples_scale;
+
 private:
   color background_gradient(const ray &r)
   {
@@ -86,19 +96,46 @@ private:
     return (1.0 - a) * start + a * end;
   }
 
-  color ray_color(const ray &r, const hittable &world)
+  color ray_color(const ray &r, i32 depth, const hittable &world)
   {
+    if (depth <= 0)
+    {
+      return color(0, 0, 0);
+    }
     const auto sphere_center = point3(0, 0, -1);
     const auto sphere_radius = 0.5;
 
-    auto maybe_record = world.hit(r, interval(0, infinity));
+    static const f64 MINIMUM_ORIGIN_DELTA = 0.001;
+    auto maybe_record = world.hit(r, interval(MINIMUM_ORIGIN_DELTA, infinity));
 
     if (maybe_record.has_value())
     {
       auto record = maybe_record.value();
-      return 0.5 * (record.normal + color(1, 1, 1));
+      ray scattered;
+      color attenuation;
+
+      if (record.mat->scatter(r, record, attenuation, scattered))
+      {
+        return attenuation * ray_color(scattered, depth - 1, world);
+      }
+      return color(0, 0, 0);
     }
     return background_gradient(r);
+  }
+
+  vec3 sample_square() const
+  {
+    return vec3(random_f64() - 0.5, random_f64() - 0.5, 0);
+  }
+
+  ray get_ray(i32 i, i32 j) const
+  {
+    auto offset = sample_square();
+    auto pixel_sample = pixel_ij(i, j, offset);
+    auto ray_origin = m_center;
+    auto ray_direction = pixel_sample - ray_origin;
+
+    return ray(ray_origin, ray_direction);
   }
 };
 

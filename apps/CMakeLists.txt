@@ -30,7 +30,13 @@ target_link_libraries(${EXECUTABLE_NAME} PUBLIC
     weekend
 )
 
-set(EXECUTABLE_NAME camera_scene)
+# set(EXECUTABLE_NAME camera_scene)
+# add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
+# target_link_libraries(${EXECUTABLE_NAME} PUBLIC
+#     weekend
+# )
+
+set(EXECUTABLE_NAME metal_scene)
 add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
 target_link_libraries(${EXECUTABLE_NAME} PUBLIC
     weekend

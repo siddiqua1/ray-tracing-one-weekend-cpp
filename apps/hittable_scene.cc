@@ -3,6 +3,8 @@
 #include "hittable_list.h"
 #include "sphere.h"
 
+#include "material.h"
+
 struct camera
 {
     point3 m_center{point3::zero()};
@@ -82,10 +84,11 @@ int main()
     const f64 aspect = 16.0 / 9.0;
     camera cam = camera(aspect, width);
     // Render
+    auto default_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
 
     hittable_list world;
-    world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
-    world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
+    world.add(make_shared<sphere>(point3(0, 0, -1), 0.5, default_material));
+    world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, default_material));
 
     std::cout
         << "P3\n"

@@ -2,15 +2,23 @@
 #define WEEKEND_UTILS_H
 
 #include <iostream>
-#include "vec3.h"
+#include <cmath>
+#include "types.h"
+// Utility Functions
 
-/**
- * Dumping helper function for printing here to optionally include in case i dont wanna bloat a given binary
- */
-
-inline std::ostream &operator<<(std::ostream &out, const vec3 &v)
+inline f64 degrees_to_radians(f64 degrees)
 {
-    return out << v.x() << ' ' << v.y() << ' ' << v.z();
+    return degrees * pi / 180.0;
+}
+
+inline f64 random_f64()
+{
+    return std::rand() / (RAND_MAX + 1.0);
+}
+
+inline f64 random_f64(f64 min, f64 max)
+{
+    return min + (max - min) * random_f64();
 }
 
 #endif

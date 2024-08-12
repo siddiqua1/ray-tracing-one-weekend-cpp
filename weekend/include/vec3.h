@@ -1,8 +1,10 @@
 #ifndef WEEKEND_VEC3_H
 #define WEEKEND_VEC3_H
 
+#include <iostream>
 #include <cmath>
 #include "types.h"
+#include "utils.h"
 /**
  * TODO: return to this for a DOD approach
  * TODO: offer a f32 version for memory footprint
@@ -43,14 +45,14 @@ public:
         m_repr[2] *= scalar;
         return *this;
     }
-    static friend inline vec3 operator*(const vec3 &self, const f64 &scalar)
+    friend inline vec3 operator*(const vec3 &self, const f64 &scalar)
     {
         return vec3(
             self.m_repr[0] * scalar,
             self.m_repr[1] * scalar,
             self.m_repr[2] * scalar);
     }
-    static friend inline vec3 operator*(const f64 &scalar, const vec3 &self)
+    friend inline vec3 operator*(const f64 &scalar, const vec3 &self)
     {
         // communtative (theoretically though IEEE might have some issues?)
         return self * scalar;
@@ -61,7 +63,7 @@ public:
         *this *= (1 / scalar);
         return *this;
     }
-    static friend inline vec3 operator/(const vec3 &self, const f64 &scalar)
+    friend inline vec3 operator/(const vec3 &self, const f64 &scalar)
     {
         return self * (1 / scalar);
     }
@@ -83,6 +85,21 @@ public:
     inline vec3 unit() const
     {
         return (*this) / (this->len());
+    }
+
+    static vec3 random()
+    {
+        return vec3(random_f64(), random_f64(), random_f64());
+    }
+    static vec3 random(f64 min, f64 max)
+    {
+        return vec3(random_f64(min, max), random_f64(min, max), random_f64(min, max));
+    }
+
+    bool near_zero() const
+    {
+        static const f64 EPSILON = 1e-8;
+        return (std::fabs(x() < EPSILON)) && (std::fabs(y() < EPSILON)) && (std::fabs(z() < EPSILON));
     }
 };
 
@@ -142,6 +159,50 @@ inline vec3 cross(const vec3 &u, const vec3 &v)
         u.y() * v.z() - u.z() * v.y(),
         u.z() * v.x() - u.x() * v.z(),
         u.x() * v.y() - u.y() * v.x());
+}
+
+/**
+ * Dumping helper function for printing here to optionally include in case i dont wanna bloat a given binary
+ */
+
+inline std::ostream &operator<<(std::ostream &out, const vec3 &v)
+{
+    return out << v.x() << ' ' << v.y() << ' ' << v.z();
+}
+
+inline vec3 random_in_unit_sphere()
+{
+    while (true)
+    {
+        auto p = vec3::random(-1, 1);
+        if (p.len_squared() < 1)
+            return p;
+    }
+}
+
+inline vec3 random_unit_vector()
+{
+    return random_in_unit_sphere().unit();
+}
+
+inline vec3 random_on_hemisphere(const vec3 &normal)
+{
+    /**
+     * TODO: This seems bad, probably better to see if we can take a normal
+     * rotate by some random angle theta then another angle phi
+     */
+    vec3 on_unit_sphere = random_unit_vector();
+    // In the same hemisphere as the normal
+    if (dot(on_unit_sphere, normal) > 0.0)
+    {
+        return on_unit_sphere;
+    }
+    return -on_unit_sphere;
+}
+
+inline vec3 reflect(const vec3 &v, const vec3 &n)
+{
+    return v - 2 * dot(v, n) * n;
 }
 
 #endif

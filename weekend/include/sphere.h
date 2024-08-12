@@ -7,7 +7,7 @@
 class sphere final : public hittable
 {
 public:
-  sphere(const point3 &center, f64 radius) : m_center(center), m_radius(std::fmax(0, radius)), m_radius_squared(m_radius * m_radius)
+  sphere(const point3 &center, f64 radius, shared_ptr<material> mat) : m_center(center), m_radius(std::fmax(0, radius)), m_radius_squared(m_radius * m_radius), m_mat(mat)
   {
   }
 
@@ -42,6 +42,7 @@ public:
     result.p = r.at(result.t);
     const auto outward_normal = (result.p - m_center) / m_radius;
     result.set_face_normal(r, outward_normal);
+    result.mat = m_mat;
     return result;
   }
 
@@ -49,6 +50,7 @@ private:
   point3 m_center;
   f64 m_radius;
   f64 m_radius_squared;
+  shared_ptr<material> m_mat;
 };
 
 #endif

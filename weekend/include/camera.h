@@ -13,21 +13,39 @@ public:
   i32 m_samples_per_pixel{10};
   i32 m_max_depth{10};
   f64 m_reflective_rate{0.5};
+  point3 m_look_from = point3::zero();
+  point3 m_look_at = point3(0, 0, -1);
+  vec3 m_relative_up = vec3(0, 1, 0);
+
+  f64 m_vertical_fov{90};
 
   void initialize()
   {
     m_image_height = int(m_image_width / m_aspect_ratio);
     m_image_height = (m_image_height < 1) ? 1 : m_image_height;
 
+    m_center = m_look_from;
+    m_focal_length = (m_look_from - m_look_at).len();
+
+    auto theta = degrees_to_radians(m_vertical_fov);
+    auto h = std::tan(theta / 2);
+
+    m_viewport_height = 2 * h * m_focal_length;
+
     m_viewport_width = m_viewport_height * (f64(m_image_width) / m_image_height);
 
-    m_viewport_u = vec3(m_viewport_width, 0, 0);
-    m_viewport_v = vec3(0, -m_viewport_height, 0);
+    m_basis_w = (m_look_from - m_look_at).unit();
+    m_basis_u = cross(m_relative_up, m_basis_w).unit();
+    m_basis_v = cross(m_basis_w, m_basis_u);
+
+    m_viewport_u = m_viewport_width * m_basis_u;
+    m_viewport_v = -m_viewport_height * m_basis_v;
 
     m_pixel_delta_u = m_viewport_u / m_image_width;
     m_pixel_delta_v = m_viewport_v / m_image_height;
 
-    m_viewport_upper_left = m_center - vec3(0, 0, m_focal_length) - m_viewport_u / 2 - m_viewport_v / 2;
+    m_viewport_upper_left =
+        m_center - (m_focal_length * m_basis_w) - m_viewport_u / 2 - m_viewport_v / 2;
 
     m_pixel00_loc = m_viewport_upper_left + 0.5 * (m_pixel_delta_u + m_pixel_delta_v);
 
@@ -82,6 +100,8 @@ private:
   vec3 m_pixel00_loc{};
 
   f64 m_pixel_samples_scale;
+
+  vec3 m_basis_u, m_basis_v, m_basis_w;
 
 private:
   color background_gradient(const ray &r)

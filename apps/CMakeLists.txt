@@ -47,3 +47,15 @@ add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
 target_link_libraries(${EXECUTABLE_NAME} PUBLIC
     weekend
 )
+
+set(EXECUTABLE_NAME wide_angle_fov)
+add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
+target_link_libraries(${EXECUTABLE_NAME} PUBLIC
+    weekend
+)
+
+set(EXECUTABLE_NAME dielectric_alt_view)
+add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
+target_link_libraries(${EXECUTABLE_NAME} PUBLIC
+    weekend
+)

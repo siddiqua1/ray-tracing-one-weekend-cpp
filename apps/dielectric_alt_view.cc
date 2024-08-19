@@ -34,5 +34,5 @@ int main()
   cam.m_look_at = point3(0, 0, -1);
   cam.m_relative_up = vec3(0, 1, 0);
 
-  cam.render(world);
+  cam.render(world, "image.ppm");
 }

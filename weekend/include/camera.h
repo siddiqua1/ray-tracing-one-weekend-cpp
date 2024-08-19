@@ -4,6 +4,7 @@
 #include "prelude.h"
 #include "hittable.h"
 #include "material.h"
+#include "file_io.h"
 
 class camera
 {
@@ -78,6 +79,47 @@ public:
         }
         write_color(std::cout, m_pixel_samples_scale * pixel_color);
       }
+    }
+    std::clog << "\rDone.                 \n";
+  }
+
+  void render(const hittable &world, const char *file_name)
+  {
+    initialize();
+    auto file = open<'w'>(file_name);
+
+    file.write_line("P3");
+    file.write_line("{} {}", m_image_width, m_image_height);
+    file.write_line("255");
+
+    std::vector<std::tuple<int, int, int>> color_buffer;
+    std::vector<const char *> format_buffer;
+    const i32 ITERATIONS = m_image_height * m_image_width;
+    color_buffer.reserve(ITERATIONS);
+    format_buffer.reserve(ITERATIONS);
+
+    for (i32 j = 0; j < m_image_height; j++)
+    {
+      std::clog << "\rScanlines remaining: "
+                << (m_image_height - j) << ' ' << std::flush;
+      for (i32 i = 0; i < m_image_width; i++)
+      {
+        color pixel_color(0, 0, 0);
+        for (i32 sample = 0; sample < m_samples_per_pixel; ++sample)
+        {
+          ray r = get_ray(i, j);
+          pixel_color += ray_color(r, m_max_depth, world);
+        }
+        write_color(color_buffer, m_pixel_samples_scale * pixel_color);
+        format_buffer.push_back("{} {} {}");
+      }
+    }
+
+    const size_t len = color_buffer.size();
+    for (size_t i = 0; i < len; ++i)
+    {
+      const auto &[r, g, b] = color_buffer[i];
+      file.write_line(format_buffer[i], r, g, b);
     }
     std::clog << "\rDone.                 \n";
   }

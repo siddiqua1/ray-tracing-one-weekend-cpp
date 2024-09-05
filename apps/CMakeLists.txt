@@ -1,5 +1,3 @@
-
-
 set(EXECUTABLE_NAME output_ppm)
 add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
 target_link_libraries(${EXECUTABLE_NAME} PUBLIC
@@ -55,6 +53,18 @@ target_link_libraries(${EXECUTABLE_NAME} PUBLIC
 )
 
 set(EXECUTABLE_NAME dielectric_alt_view)
+add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
+target_link_libraries(${EXECUTABLE_NAME} PUBLIC
+    weekend
+)
+
+set(EXECUTABLE_NAME depth_of_field)
+add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
+target_link_libraries(${EXECUTABLE_NAME} PUBLIC
+    weekend
+)
+
+set(EXECUTABLE_NAME final_scene)
 add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
 target_link_libraries(${EXECUTABLE_NAME} PUBLIC
     weekend

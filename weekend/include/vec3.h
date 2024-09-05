@@ -213,4 +213,19 @@ inline vec3 refract(const vec3 &uv, const vec3 &n, f64 etaI_over_etaT)
     return r_out_parallel + r_out_perpendicular;
 }
 
+inline vec3 random_in_unit_disk()
+{
+    while (true)
+    {
+        auto p = vec3(
+            random_f64(-1, 1),
+            random_f64(-1, 1),
+            0);
+        if (p.len_squared() < 1)
+        {
+            return p;
+        }
+    }
+}
+
 #endif

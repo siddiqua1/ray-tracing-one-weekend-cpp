@@ -6,6 +6,9 @@
 #include "material.h"
 #include "file_io.h"
 
+#include <thread>
+#include <cassert>
+
 class camera
 {
 public:
@@ -20,18 +23,20 @@ public:
 
   f64 m_vertical_fov{90};
 
+  f64 m_defocus_angle = 0;
+  f64 m_focus_dist = 10;
+
   void initialize()
   {
     m_image_height = int(m_image_width / m_aspect_ratio);
     m_image_height = (m_image_height < 1) ? 1 : m_image_height;
 
     m_center = m_look_from;
-    m_focal_length = (m_look_from - m_look_at).len();
 
     auto theta = degrees_to_radians(m_vertical_fov);
     auto h = std::tan(theta / 2);
 
-    m_viewport_height = 2 * h * m_focal_length;
+    m_viewport_height = 2 * h * m_focus_dist;
 
     m_viewport_width = m_viewport_height * (f64(m_image_width) / m_image_height);
 
@@ -46,11 +51,15 @@ public:
     m_pixel_delta_v = m_viewport_v / m_image_height;
 
     m_viewport_upper_left =
-        m_center - (m_focal_length * m_basis_w) - m_viewport_u / 2 - m_viewport_v / 2;
+        m_center - (m_focus_dist * m_basis_w) - m_viewport_u / 2 - m_viewport_v / 2;
 
     m_pixel00_loc = m_viewport_upper_left + 0.5 * (m_pixel_delta_u + m_pixel_delta_v);
 
     m_pixel_samples_scale = 1.0 / m_samples_per_pixel;
+
+    auto defocus_radius = m_focus_dist * std::tan(degrees_to_radians(m_defocus_angle / 2));
+    m_defocus_disk_u = m_basis_u * defocus_radius;
+    m_defocus_disk_v = m_basis_v * defocus_radius;
   }
 
   inline vec3 pixel_ij(i32 i, i32 j, const vec3 &offset) const
@@ -92,26 +101,44 @@ public:
     file.write_line("{} {}", m_image_width, m_image_height);
     file.write_line("255");
 
-    std::vector<std::tuple<int, int, int>> color_buffer;
-    std::vector<const char *> format_buffer;
     const i32 ITERATIONS = m_image_height * m_image_width;
-    color_buffer.reserve(ITERATIONS);
-    format_buffer.reserve(ITERATIONS);
+
+    std::vector<std::tuple<int, int, int>> color_buffer(ITERATIONS);
 
     for (i32 j = 0; j < m_image_height; j++)
     {
       std::clog << "\rScanlines remaining: "
                 << (m_image_height - j) << ' ' << std::flush;
-      for (i32 i = 0; i < m_image_width; i++)
+
+      assert(m_image_width % m_THREAD_COUNT == 0);
+      for (i32 i = 0; i < m_image_width; i += m_THREAD_COUNT)
       {
-        color pixel_color(0, 0, 0);
-        for (i32 sample = 0; sample < m_samples_per_pixel; ++sample)
+
+        auto thread_routine = [this, &world, &color_buffer](i32 kj, i32 ki)
         {
-          ray r = get_ray(i, j);
-          pixel_color += ray_color(r, m_max_depth, world);
+          size_t insertion_idx = kj * m_image_width + ki;
+          color pixel_color(0, 0, 0);
+
+          for (i32 sample = 0; sample < m_samples_per_pixel; ++sample)
+          {
+            ray r = get_ray(ki, kj);
+            pixel_color += ray_color(r, m_max_depth, world);
+          }
+          write_color(color_buffer, m_pixel_samples_scale * pixel_color, insertion_idx);
+        };
+
+        std::thread thread_pool[m_THREAD_COUNT];
+
+        i32 offset = 0;
+        for (auto &t : thread_pool)
+        {
+          t = std::thread(thread_routine, j, i + offset);
+          offset++;
         }
-        write_color(color_buffer, m_pixel_samples_scale * pixel_color);
-        format_buffer.push_back("{} {} {}");
+        for (auto &t : thread_pool)
+        {
+          t.join();
+        }
       }
     }
 
@@ -119,7 +146,7 @@ public:
     for (size_t i = 0; i < len; ++i)
     {
       const auto &[r, g, b] = color_buffer[i];
-      file.write_line(format_buffer[i], r, g, b);
+      file.write_line("{} {} {}", r, g, b);
     }
     std::clog << "\rDone.                 \n";
   }
@@ -128,7 +155,6 @@ private:
   point3 m_center{point3::zero()};
 
   i32 m_image_height{0};
-  f64 m_focal_length{1.0};
   f64 m_viewport_width{0};
   f64 m_viewport_height{2.0};
 
@@ -145,8 +171,13 @@ private:
 
   vec3 m_basis_u, m_basis_v, m_basis_w;
 
+  vec3 m_defocus_disk_u;
+  vec3 m_defocus_disk_v;
+
+  static const size_t m_THREAD_COUNT = 8;
+
 private:
-  color background_gradient(const ray &r)
+  color background_gradient(const ray &r) const
   {
     vec3 unit_direction = r.direction().unit();
 
@@ -158,7 +189,7 @@ private:
     return (1.0 - a) * start + a * end;
   }
 
-  color ray_color(const ray &r, i32 depth, const hittable &world)
+  color ray_color(const ray &r, i32 depth, const hittable &world) const
   {
     if (depth <= 0)
     {
@@ -194,10 +225,17 @@ private:
   {
     auto offset = sample_square();
     auto pixel_sample = pixel_ij(i, j, offset);
-    auto ray_origin = m_center;
+    auto ray_origin = (m_defocus_angle <= 0) ? m_center : defocus_disk_sample();
     auto ray_direction = pixel_sample - ray_origin;
 
     return ray(ray_origin, ray_direction);
+  }
+
+  point3 defocus_disk_sample() const
+  {
+    // Returns a random point in the camera defocus disk.
+    auto p = random_in_unit_disk();
+    return m_center + (p[0] * m_defocus_disk_u) + (p[1] * m_defocus_disk_v);
   }
 };
 

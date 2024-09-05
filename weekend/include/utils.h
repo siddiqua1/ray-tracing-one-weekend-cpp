@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cmath>
 #include "types.h"
+#include "XoshiroCpp.hpp"
 // Utility Functions
 
 inline f64 degrees_to_radians(f64 degrees)
@@ -14,12 +15,13 @@ inline f64 degrees_to_radians(f64 degrees)
 
 inline f64 random_f64()
 {
-    /**
-     * TODO: Refer to Cherno's video on random in c++ in 3 lines of code
-     */
-    static std::uniform_real_distribution<double> distribution(0.0, 1.0);
-    static std::mt19937 generator;
-    return distribution(generator);
+    using namespace XoshiroCpp;
+
+    const std::uint64_t seed = 12345;
+
+    static Xoshiro256PlusPlus rng(seed);
+    static std::uniform_real_distribution<f64> distribution(0.0, 1.0);
+    return distribution(rng);
 }
 
 inline f64 random_f64(f64 min, f64 max)

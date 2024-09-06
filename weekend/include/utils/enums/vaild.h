@@ -1,6 +1,6 @@
 #pragma once
 
-namespace utils::enums
+namespace raytrace::utils::enums
 {
 
   template <typename Enum>

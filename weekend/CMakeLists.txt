@@ -8,8 +8,14 @@ add_library(${LIBRARY_NAME} STATIC
     ${LIBRARY_SRC_FILES}
 )
 
-target_include_directories(${LIBRARY_NAME} PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+target_include_directories(
+    ${LIBRARY_NAME}
+PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
 )
 
 target_link_libraries(${LIBRARY_NAME} PUBLIC compiler_flags)
+
+
+add_subdirectory(tests)

@@ -36,3 +36,6 @@
 
 # Builds + Misc outputs
 build/
+
+# ctest
+Testing/

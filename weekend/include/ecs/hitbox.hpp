@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optional>
-#include "namespace.hpp"
+#include "prelude.hpp"
 _RAYTRACE_ECS_START
 
 struct hit_record
@@ -58,7 +58,7 @@ public:
 
 class TextureAllocator
 {
-
+public:
 public:
   enum class TextureType
   {

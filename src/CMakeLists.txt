@@ -1,8 +1,13 @@
 file(GLOB_RECURSE HEADER_LIST CONFIGURE_DEPENDS "${ray_tracing_one_weekend_SOURCE_DIR}/include/weekend/*.hpp")
 
+
 set(SOURCE_LIST 
-  smoke.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/random.cc;
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/vec3.cc;
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/XoshiroCpp.hpp;
 )
+
+message(STATUS ${SOURCE_LIST} )
 
 add_library(
   weekend

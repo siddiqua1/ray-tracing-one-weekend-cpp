@@ -1,8 +1,14 @@
 #include <iostream>
-#include "types.h"
-#include "color.h"
-#include "vec3.h"
-#include "ray.h"
+#include <weekend/core/types.hpp>
+#include <weekend/core/color.hpp>
+#include <weekend/core/vec3.hpp>
+#include <weekend/core/ray.hpp>
+
+using namespace weekend;
+using weekend::core::color;
+using weekend::core::point3;
+using weekend::core::ray;
+using weekend::core::vec3;
 
 struct camera
 {

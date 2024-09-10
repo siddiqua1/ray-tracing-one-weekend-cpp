@@ -1,9 +1,27 @@
-#include "prelude.h"
-#include "hittable.h"
-#include "hittable_list.h"
-#include "sphere.h"
+#include <iostream>
+#include <memory>
+#include <weekend/core/types.hpp>
+#include <weekend/core/color.hpp>
+#include <weekend/core/vec3.hpp>
+#include <weekend/core/ray.hpp>
+#include <weekend/core/interval.hpp>
+#include <weekend/base/hittable.hpp>
+#include <weekend/base/sphere.hpp>
+#include <weekend/base/hittable_list.hpp>
+#include <weekend/base/material.hpp>
 
-#include "material.h"
+using namespace weekend;
+using weekend::base::hittable;
+using weekend::base::hittable_list;
+using weekend::base::lambertian;
+using weekend::base::sphere;
+using weekend::core::color;
+using weekend::core::interval;
+using weekend::core::point3;
+using weekend::core::ray;
+using weekend::core::vec3;
+
+using std::make_shared;
 
 struct camera
 {

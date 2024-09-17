@@ -10,4 +10,3 @@ vec3::vec3(const f64 x, const f64 y, const f64 z) : m_repr{x, y, z} {}
 f64 vec3::operator[](const size_t i) const { return m_repr[i]; }
 f64 &vec3::operator[](const size_t i) { return m_repr[i]; }
 
-inline vec3 vec3::operator-() const { return vec3(-x(), -y(), -z()); }

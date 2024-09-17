@@ -27,7 +27,7 @@ public:
    *
    * @return vec3
    */
-  inline vec3 operator-() const;
+  inline vec3 operator-() const { return vec3(-x(), -y(), -z()); }
 
   inline vec3 &operator+=(const vec3 &other) {
     m_repr[0] += other.x();

@@ -2,6 +2,7 @@
 
 #include "types.hpp"
 namespace weekend::core {
+
 class interval {
 public:
   f64 m_min, m_max;

@@ -1,9 +1,8 @@
 #include <iostream>
+#include <weekend/core/color.hpp>
 #include <weekend/core/ray.hpp>
 #include <weekend/core/types.hpp>
 #include <weekend/core/vec3.hpp>
-#include <weekend/core/color.hpp>
-#include <weekend/core/types.hpp>
 
 using namespace weekend;
 using weekend::core::color;
@@ -11,8 +10,7 @@ using weekend::core::point3;
 using weekend::core::ray;
 using weekend::core::vec3;
 
-struct camera
-{
+struct camera {
   point3 m_center{point3::zero()};
 
   f64 m_aspect_ratio{0};
@@ -32,8 +30,7 @@ struct camera
   vec3 m_pixel00_loc{};
 
   camera(f64 aspect_ratio, i32 width)
-      : m_aspect_ratio(aspect_ratio), m_image_width(width)
-  {
+      : m_aspect_ratio(aspect_ratio), m_image_width(width) {
     m_image_height = int(m_image_width / m_aspect_ratio);
     m_image_height = (m_image_height < 1) ? 1 : m_image_height;
 
@@ -53,14 +50,12 @@ struct camera
         m_viewport_upper_left + 0.5 * (m_pixel_delta_u + m_pixel_delta_v);
   }
 
-  inline vec3 pixel_ij(i32 i, i32 j)
-  {
+  inline vec3 pixel_ij(i32 i, i32 j) {
     return m_pixel00_loc + (i * m_pixel_delta_u) + (j * m_pixel_delta_v);
   }
 };
 
-color ray_color(const ray &r)
-{
+color ray_color(const ray &r) {
 
   vec3 unit_direction = r.direction().unit();
 
@@ -72,8 +67,7 @@ color ray_color(const ray &r)
   return (1.0 - a) * start + a * end;
 }
 
-int main()
-{
+int main() {
   // Image
 
   const i32 width = 400;
@@ -81,21 +75,22 @@ int main()
   camera cam = camera(aspect, width);
   // Render
 
-  std::cout << "P3\n"
-            << cam.m_image_width << ' ' << cam.m_image_height << "\n255\n";
+  auto file = utils::open<'w'>("camera.ppm");
+  file.write_line("P3");
+  file.write_line("{} {}", cam.m_image_width, cam.m_image_height);
+  file.write_line("255");
 
-  for (i32 j = 0; j < cam.m_image_height; j++)
-  {
+  for (i32 j = 0; j < cam.m_image_height; j++) {
     std::clog << "\rScanlines remaining: " << (cam.m_image_height - j) << ' '
               << std::flush;
-    for (i32 i = 0; i < cam.m_image_width; i++)
-    {
+    for (i32 i = 0; i < cam.m_image_width; i++) {
       auto pixel_ij_center = cam.pixel_ij(i, j);
       auto ray_direction = pixel_ij_center - cam.m_center;
 
-      ray r(cam.m_center, ray_direction);
-      color pixel_color = ray_color(r);
-      write_color(std::cout, pixel_color);
+      ray ray_from_cam(cam.m_center, ray_direction);
+      color pixel_color = ray_color(ray_from_cam);
+      const auto [r, g, b] = core::to_tuple(pixel_color);
+      file.write_line("{} {} {}", r, g, b);
     }
   }
   std::clog << "\rDone.                 \n";

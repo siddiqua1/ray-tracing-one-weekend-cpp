@@ -43,5 +43,5 @@ int main() {
   cam.m_samples_per_pixel = 100;
   cam.m_max_depth = 50;
 
-  cam.render(world);
+  cam.render(world, "dielectric_scene.ppm");
 }

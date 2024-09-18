@@ -105,8 +105,10 @@ int main() {
   world.add(make_shared<sphere>(point3(0, 0, -1), 0.5, default_material));
   world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, default_material));
 
-  std::cout << "P3\n"
-            << cam.m_image_width << ' ' << cam.m_image_height << "\n255\n";
+  auto file = utils::open<'w'>("hittable_scene.ppm");
+  file.write_line("P3");
+  file.write_line("{} {}", cam.m_image_width, cam.m_image_height);
+  file.write_line("255");
 
   for (i32 j = 0; j < cam.m_image_height; j++) {
     std::clog << "\rScanlines remaining: " << (cam.m_image_height - j) << ' '
@@ -115,9 +117,10 @@ int main() {
       auto pixel_ij_center = cam.pixel_ij(i, j);
       auto ray_direction = pixel_ij_center - cam.m_center;
 
-      ray r(cam.m_center, ray_direction);
-      color pixel_color = ray_color(r, world);
-      write_color(std::cout, pixel_color);
+      ray ray_from_cam(cam.m_center, ray_direction);
+      color pixel_color = ray_color(ray_from_cam, world);
+      const auto [r, g, b] = core::to_tuple(pixel_color);
+      file.write_line("{} {} {}", r, g, b);
     }
   }
   std::clog << "\rDone.                 \n";

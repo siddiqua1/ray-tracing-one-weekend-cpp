@@ -51,5 +51,5 @@ int main() {
   cam.m_defocus_angle = 10.0;
   cam.m_focus_dist = 3.4;
 
-  cam.render(world, "image.ppm");
+  cam.render(world, "depth_of_field.ppm");
 }

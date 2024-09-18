@@ -14,6 +14,12 @@ cmake -B build
 cmake --build build
 ```
 
+It recommended to build for release which you can do so with the following command
+
+```shell
+cmake --build build --config release
+```
+
 ## Cleaning
 
 ```shell

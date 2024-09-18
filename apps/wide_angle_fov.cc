@@ -40,5 +40,5 @@ int main() {
 
   cam.m_vertical_fov = 90;
 
-  cam.render(world);
+  cam.render(world, "wide_angle_fov.ppm");
 }

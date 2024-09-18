@@ -42,3 +42,6 @@ Testing/
 
 #clang 
 .cache/
+
+#rendered outputs
+*.ppm

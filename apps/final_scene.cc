@@ -81,5 +81,5 @@ int main() {
   cam.m_defocus_angle = 0.6;
   cam.m_focus_dist = 10.0;
 
-  cam.render(world, "image.ppm");
+  cam.render(world, "final_scene.ppm");
 }

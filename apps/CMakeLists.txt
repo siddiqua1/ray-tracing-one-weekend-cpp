@@ -1,71 +1,16 @@
-set(EXECUTABLE_NAME output_ppm)
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-    weekend
-)
+function(create_weekend_executable app_name)
+    add_executable(${app_name} ${app_name}.cc)
+    target_link_libraries(${app_name} PRIVATE weekend)
+endfunction()
 
-set(EXECUTABLE_NAME camera)
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-    weekend
-)
-
-set(EXECUTABLE_NAME single_sphere)
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-    weekend
-)
-
-set(EXECUTABLE_NAME rendered_normals)
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-    weekend
-)
-
-set(EXECUTABLE_NAME hittable_scene)
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-    weekend
-)
-
-# set(EXECUTABLE_NAME camera_scene)
-# add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-# target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-#     weekend
-# )
-
-set(EXECUTABLE_NAME metal_scene)
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-    weekend
-)
-
-set(EXECUTABLE_NAME dielectric_scene)
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-    weekend
-)
-
-set(EXECUTABLE_NAME wide_angle_fov)
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-    weekend
-)
-
-set(EXECUTABLE_NAME dielectric_alt_view)
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-    weekend
-)
-
-set(EXECUTABLE_NAME depth_of_field)
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-    weekend
-)
-
-set(EXECUTABLE_NAME final_scene)
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cc)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC
-    weekend
-)
+create_weekend_executable(output_ppm)
+create_weekend_executable(camera)
+create_weekend_executable(single_sphere)
+create_weekend_executable(rendered_normals)
+create_weekend_executable(hittable_scene)
+create_weekend_executable(metal_scene)
+create_weekend_executable(dielectric_scene)
+create_weekend_executable(wide_angle_fov)
+create_weekend_executable(dielectric_alt_view)
+create_weekend_executable(depth_of_field)
+create_weekend_executable(final_scene)

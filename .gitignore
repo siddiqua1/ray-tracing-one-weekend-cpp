@@ -36,3 +36,12 @@
 
 # Builds + Misc outputs
 build/
+
+# ctest
+Testing/
+
+#clang 
+.cache/
+
+#rendered outputs
+*.ppm

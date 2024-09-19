@@ -1,18 +1,18 @@
-#ifndef WEEKEND_SPHERE_H
-#define WEEKEND_SPHERE_H
+#pragma once
 
-#include "hittable.h"
-#include "vec3.h"
+#include "weekend/base/hittable.hpp"
+#include "weekend/core/vec3.hpp"
 
-class sphere final : public hittable
-{
+namespace weekend::base {
+
+class sphere final : public hittable {
 public:
-  sphere(const point3 &center, f64 radius, shared_ptr<material> mat) : m_center(center), m_radius(std::fmax(0, radius)), m_radius_squared(m_radius * m_radius), m_mat(mat)
-  {
-  }
+  sphere(const core::point3 &center, f64 radius, std::shared_ptr<material> mat)
+      : m_center(center), m_radius(std::fmax(0, radius)),
+        m_radius_squared(m_radius * m_radius), m_mat(mat) {}
 
-  std::optional<hit_record> hit(const ray &r, interval ray_t) const override
-  {
+  std::optional<hit_record> hit(const core::ray &r,
+                                core::interval ray_t) const override {
     const auto C_minus_Q = m_center - r.origin();
     const auto &dir = r.direction();
     const auto a = dir.len_squared();
@@ -20,19 +20,16 @@ public:
     const auto c = C_minus_Q.len_squared() - m_radius_squared;
     const auto discriminant = h * h - a * c;
 
-    if (discriminant < 0)
-    {
+    if (discriminant < 0) {
       return std::nullopt;
     }
 
     const auto sqrt_discriminant = std::sqrt(discriminant);
 
     auto root = (h - sqrt_discriminant) / a;
-    if (!ray_t.surrounds(root))
-    {
+    if (!ray_t.surrounds(root)) {
       root = (h + sqrt_discriminant) / a;
-      if (!ray_t.surrounds(root))
-      {
+      if (!ray_t.surrounds(root)) {
         return std::nullopt;
       }
     }
@@ -47,10 +44,9 @@ public:
   }
 
 private:
-  point3 m_center;
+  core::point3 m_center;
   f64 m_radius;
   f64 m_radius_squared;
-  shared_ptr<material> m_mat;
+  std::shared_ptr<material> m_mat;
 };
-
-#endif
+} // namespace weekend::base

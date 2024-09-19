@@ -1,13 +1,26 @@
-#include "prelude.h"
+#include <weekend/base/camera.hpp>
+#include <weekend/base/hittable.hpp>
+#include <weekend/base/hittable_list.hpp>
+#include <weekend/base/material.hpp>
+#include <weekend/base/sphere.hpp>
 
-#include "camera.h"
-#include "hittable.h"
-#include "hittable_list.h"
-#include "material.h"
-#include "sphere.h"
+using namespace weekend;
+using weekend::base::camera;
+using weekend::base::dielectric;
+using weekend::base::hittable;
+using weekend::base::hittable_list;
+using weekend::base::lambertian;
+using weekend::base::metal;
+using weekend::base::sphere;
+using weekend::core::color;
+using weekend::core::interval;
+using weekend::core::point3;
+using weekend::core::ray;
+using weekend::core::vec3;
 
-int main()
-{
+using std::make_shared;
+
+int main() {
   hittable_list world;
 
   auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
@@ -16,7 +29,8 @@ int main()
   auto material_bubble = make_shared<dielectric>(1.00 / 1.50);
   auto material_right = make_shared<metal>(color(0.8, 0.6, 0.2), 1.0);
 
-  world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
+  world.add(
+      make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
   world.add(make_shared<sphere>(point3(0.0, 0.0, -1.2), 0.5, material_center));
   world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.5, material_left));
   world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.4, material_bubble));
@@ -34,5 +48,5 @@ int main()
   cam.m_look_at = point3(0, 0, -1);
   cam.m_relative_up = vec3(0, 1, 0);
 
-  cam.render(world, "image.ppm");
+  cam.render(world, "dielectric_alt_view.ppm");
 }

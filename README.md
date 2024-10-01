@@ -20,6 +20,21 @@ It recommended to build for release which you can do so with the following comma
 cmake --build build --config release
 ```
 
+### Docker
+
+To build using Docker first create the Docker image using the following command
+
+```shell
+docker build -t ray-tracing .
+```
+
+Then to run the container you need to ensure that the `output` directory from teh docker image is mounted to some local directory so that outputted `.png` files can be viewed.
+
+```shell
+mkdir -p $(pwd)/output
+docker run -v $(pwd)/output:/output ray-tracing
+```
+
 ## Cleaning
 
 ```shell

@@ -9,6 +9,17 @@ For compiling this project from source you will need the following
 
 ## Building
 
+### Source
+
+If you wish to build from source you will need CMake. First clone this repo and cd into it.
+
+```shell
+git clone git@github.com:siddiqua1/ray-tracing-one-weekend-cpp.git
+cd ray-tracing-one-weekend-cpp
+```
+
+Then build the project using your preferred generator.
+
 ```shell
 cmake -B build
 cmake --build build
@@ -28,14 +39,23 @@ To build using Docker first create the Docker image using the following command
 docker build -t ray-tracing .
 ```
 
-Then to run the container you need to ensure that the `output` directory from teh docker image is mounted to some local directory so that outputted `.png` files can be viewed.
+Then to run the container you need to ensure that the `output` directory from the docker image is mounted to some local directory so that outputted `.png` files can be viewed on your host machine.
 
 ```shell
 mkdir -p $(pwd)/output
-docker run -v $(pwd)/output:/output ray-tracing
+docker run -v $(pwd)/output:/app/output ray-tracing
+```
+
+If you are on windows, the corresponding commands are
+
+```shell
+mkdir %CD%\output
+docker run -v %CD%/output:/app/output ray-tracing
 ```
 
 ## Cleaning
+
+If you built from source you may want to clean your CMake fiels before rebuilding whihc you cna do with the following command.
 
 ```shell
 cmake --build build --target clean
@@ -47,12 +67,13 @@ The project builds multiple binaries corresponding to the various checkpoints in
 
 ![Output of final render with ray depth of 10](resources/final_scene.png)
 
-_Note:_ Generated files are in the `.ppm` format as they are easy to write to. You will need a likely need a converter to view locally.
+_Note:_ Generated files are in the `.ppm` format as they are easy to write to. You will need a likely need a converter to view locally. The Docker container uses `imagemagick`.
 
 ### Roadmap
 
 - [x] Get first iteration from the book working
 - [x] Update codebase to use more modern C++ and CMake features
+- [x] Docker support
 - [ ] Benchmarking framework
 - [ ] Render modes
   - Toggle between file out put and live render

@@ -23,11 +23,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 endif()
 
 
-
-add_library(compiler_flags INTERFACE)
-target_compile_features(compiler_flags INTERFACE cxx_std_20)
-
-
 # compile library code
 add_subdirectory(src)
 

@@ -52,7 +52,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Setup Ninja
-      if: "${{ matrix.generator == "Ninja" }}"
+      if: ${{ matrix.generator }} == "Ninja"
       uses: seanmiddleditch/gha-setup-ninja@v5
       run: echo "Getting Ninja to use as generator"
 

@@ -7,7 +7,7 @@ on:
     branches: [ "main" ] 
   pull_request:
     branches: [ "main" ]
-    
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -23,10 +23,10 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        build_type: Release
-        os: ubuntu-24.04
-        c_compiler: clang
-        cpp_compiler: clang++
+        build_type: [Release]
+        os: [ubuntu-24.04]
+        c_compiler: [clang]
+        cpp_compiler: [clang++]
 
     steps:
     - uses: actions/checkout@v4

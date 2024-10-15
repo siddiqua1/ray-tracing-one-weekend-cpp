@@ -54,7 +54,6 @@ jobs:
     - name: Setup Ninja
       if: ${{ matrix.generator }} == "Ninja"
       uses: seanmiddleditch/gha-setup-ninja@v5
-      run: echo "Getting Ninja to use as generator"
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.

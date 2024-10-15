@@ -1,12 +1,12 @@
 # This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
 # See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
-name: Create Executables Linux
+name: Create Executables Windows
 
 on:
   push:
-    tags:
-    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -23,15 +23,12 @@ jobs:
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
         build_type: [Release]
-        os: [ubuntu-24.04]
-        c_compiler: [clang]
-        cpp_compiler: [clang++]
+        os: [windows-latest]
+        c_compiler: [cl]
+        cpp_compiler: [cl]
 
     steps:
     - uses: actions/checkout@v4
-
-    - name: Setup Ninja
-      uses: seanmiddleditch/gha-setup-ninja@v5
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
@@ -48,7 +45,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -S ${{ github.workspace }} -G Ninja
+        -S ${{ github.workspace }}
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).

@@ -7,6 +7,9 @@ project(ray_tracing_one_weekend
 )
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Output directory for applications")
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Only build docs if this is the main project
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) 
   find_package(Doxygen)
@@ -21,6 +24,10 @@ endif()
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) 
   include(CTest)
 endif()
+
+#add in webgpu dependency
+add_subdirectory(webgpu)
+
 
 
 # compile library code

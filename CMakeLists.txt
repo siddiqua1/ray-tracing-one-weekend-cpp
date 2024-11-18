@@ -5,6 +5,7 @@ project(ray_tracing_one_weekend
   DESCRIPTION "Ray Tracing in One Weekend"
   LANGUAGES CXX
 )
+
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Output directory for applications")
 
 set(CMAKE_CXX_STANDARD 20)
@@ -28,6 +29,15 @@ endif()
 #add in webgpu dependency
 add_subdirectory(webgpu)
 
+# glfw dependency
+if (NOT EMSCRIPTEN)
+  add_subdirectory(glfw)
+else()
+  # Emscripten has built-in support for GLFW but requires the `-sUSE_GLFW=3` link option:
+  add_library(glfw INTERFACE)
+  target_link_options(glfw INTERFACE -sUSE_GLFW=3)
+endif()
+add_subdirectory(glfw3webgpu)
 
 
 # compile library code

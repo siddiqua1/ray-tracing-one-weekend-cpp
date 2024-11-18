@@ -15,8 +15,12 @@ create_weekend_executable(dielectric_alt_view)
 create_weekend_executable(depth_of_field)
 create_weekend_executable(final_scene)
 
-add_executable(wgpu_setup wgpu_setup.cc)
-target_link_libraries(wgpu_setup PRIVATE webgpu)
+add_executable(wgpu_setup 
+    wgpu_setup.cc
+    webgpu-utils.h
+    webgpu-utils.cpp 
+)
+target_link_libraries(wgpu_setup PRIVATE glfw webgpu glfw3webgpu)
 
 target_copy_webgpu_binaries(wgpu_setup)
 

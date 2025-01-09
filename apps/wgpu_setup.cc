@@ -246,11 +246,11 @@ wgpu::TextureView Application::GetNextSurfaceTextureView() {
   wgpu::TextureView targetView =
       wgpuTextureCreateView(surfaceTexture.texture, &viewDescriptor);
 
-#ifndef WEBGPU_BACKEND_wgpu::
+#ifndef WEBGPU_BACKEND_WGPU
   // We no longer need the texture, only its view
   // (NB: with wgpu-native, surface textures must not be manually released)
   wgpuTextureRelease(surfaceTexture.texture);
-#endif // WEBGPU_BACKEND_wgpu::
+#endif // WEBGPU_BACKEND_WGPU
 
   return targetView;
 }
